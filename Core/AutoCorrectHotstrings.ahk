@@ -7027,7 +7027,7 @@ ACitemsStartAt := A_LineNumber + 3 ; hh2 validity checks will skip lines until i
 :B0X?C:zys::f("zies") ; Web Freq 0.33 | Fixes 21 words 
 :B0XC:ASS::f("ADD") ; Web Freq 387.23 | Fixes 2 words, Case-sensitive to fix acronym, but not word.
 :B0XC:Danial::f("Daniel") ; Fixes 1 word 
-:B0XC:Im::f("I'm") ; Fixes 1 word
+:B0X:Im::f("I'm") ; Fixes 1 word, manually changed from B0XC to B0X
 :B0XC:SVA::f("SBA") ; Fixes 1 word 
 :B0XC:abel::f("able") ; Web Freq 109.39 | Fixes 1 word
 :B0XC:alos::f("also") ; Web Freq 616.83 | Fixes 1 word 
@@ -7454,3 +7454,21 @@ ACitemsEndAt := A_LineNumber - 3 ; hh2 validity checks will skip lines after her
 ; Anything below this point was added to the script by the user via the Win+H hotkey.
 ;-------------------------------------------------------------------------------
 
+
+:B0X:ive::f("I've") ; Fixes 1 word 
+:B0X:insated::f("instead") ; Web Freq 56.50 | Fixes 1 word 
+:B0X:sutiable::f("suitable") ; Web Freq 20.82 | Fixes 1 word 
+:B0X:qualfied::f("qualified") ; Web Freq 22.75 | Fixes 1 word 
+:B0X:dynmaiclly::f("dynamically") ; Web Freq 2.95 | Fixes 1 word 
+:B0X:configuri::f("configure") ; Web Freq 14.46 | Fixes 1 word 
+:B0X:excludsion::f("exclusion") ; Web Freq 5.72 | Fixes 1 word 
+:B0X:wrtite::f("write") ; Web Freq 126.65 | Fixes 1 word 
+:B0X:methodd::f("method") ; Web Freq 84.40 | Fixes 1 word 
+:B0X:alaso::f("also") ; Web Freq 616.83 | Fixes 1 word 
+:B0X:alsao::f("also") ; Web Freq 616.83 | Fixes 1 word 
+:B0X:whast::f("what's") ; Fixes 1 word 
+:B0X:regualr::f("regular") ; Web Freq 62.31 | Fixes 1 word 
+:B0X:perhpes::f("perhaps") ; Web Freq 42.45 | Fixes 1 word 
+:B0X:famialir::f("familiar") ; Web Freq 16.39 | Fixes 1 word 
+:B0X:ouyput::f("output") ; Web Freq 55.82 | Fixes 1 word 
+:B0X:distnict::f("distinct") ; Web Freq 10.32 | Fixes 1 word 
