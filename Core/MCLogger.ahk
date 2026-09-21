@@ -107,8 +107,12 @@ WordListFile := "..\Data\" IniRead(settingsFile, "Files", "WordListFile", "GitHu
 MCLoggerRunAnalysisHotkey := IniRead(settingsFile, "HotKeys", "MCLoggerRunAnalysisHotkey", "#^+q")
 MCLoggerSneakPeekHotkey := IniRead(settingsFile, "HotKeys", "MCLoggerSneakPeekHotkey", "#+q")
 
-LightGreen := "c" IniRead(settingsFile, "Shared", "LightGreen", "b8f3ab")
-DarkGreen := "c" IniRead(settingsFile, "Shared", "DarkGreen", "0d3803")
+LightGreen := IniRead(settingsFile, "Shared", "LightGreen", "b8f3ab")
+DarkGreen := IniRead(settingsFile, "Shared", "DarkGreen", "0d3803")
+LightBlue := IniRead(settingsFile, "Shared", "LightBlue", "ADD8E6")
+DarkBlue := IniRead(settingsFile, "Shared", "DarkBlue", "00008B")
+LightCyan := IniRead(settingsFile, "Shared", "LightCyan", "00FFFF")
+DarkCyan := IniRead(settingsFile, "Shared", "DarkCyan", "008B8B")
 
 showEachHotString := IniRead(settingsFile, "MCLogger", "ShowEachHotString", 1)
 beepEachHotString := IniRead(settingsFile, "MCLogger", "BeepEachHotString", 1)
@@ -196,7 +200,7 @@ lvColors := "" ; Holds the LV_Colors instance while the report GUI is open.
 formColor := "0x" subStr(formColor, -6) ; Make sure the hex value appears as a number, rather than a string. 
 r := (formColor >> 16) & 0xFF, g := (formColor >> 8) & 0xFF, b := formColor & 0xFF
 brightness := (r * 299 + g * 587 + b * 114) / 1000
-progBarGreen := brightness > 128 ? DarkGreen  : LightGreen  ; The color of the progress bar.
+progBarGreen := brightness < 128 ? LightGreen  : DarkGreen  ; The color of the progress bar.
 
 ;--- create systray menu ----
 mclAppIcon := "..\Resources\Icons\JustLog.ico"
@@ -1010,7 +1014,7 @@ runAnalysis(*) {
 	cl.Add('text','w400 wrap','Analysis complete. The most frequent items are shown below. Select an item then right-click to copy, or use buttons below to cull/append.')
    
    ; Calculate DeltaString color based on form brightness (already calculated at startup, line 101)
-   deltaColor := brightness > 128 ? "191970" : "00FFFF"  ; Dark blue for light background, light cyan for dark background
+   deltaColor := brightness < 128 ? LightCyan : DarkBlue  ; Dark blue for light background, light cyan for dark background
    
    ; Add DeltaString control to show visual comparison of trigger/replacement
    ; Styling: s15 bold, aligned with list, contrasting blue color, same background as form

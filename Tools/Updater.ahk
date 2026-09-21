@@ -783,7 +783,7 @@ AddCompletedFilesReadOnlySection(updaterGui, updatedFiles, updaterState) {
 
     heading := updaterGui.Add(
         "Text",
-        "xm w760 cGreen y+12",
+        "xm w760 c" Config.EffectiveGreen " y+12",
         "Completed in this update (" completed.Length "):")
     updaterGui.completedHeading := heading
 
@@ -812,7 +812,10 @@ AddUpdaterSnapshotSection(updaterGui, updaterState, headingText) {
     if pendingCount = 0
         return ""
 
-    updaterGui.Add("Text", "xm w760 cBlue y+10", headingText " (" pendingCount "):")
+    updaterGui.Add(
+        "Text",
+        "xm w760 c" Config.EffectiveBlue " y+10",
+        headingText " (" pendingCount "):")
     updaterGui.Add(
         "Text",
         "xm w760",
@@ -1451,6 +1454,22 @@ ScanRepositoryForUpdates(srcRoot, installDir, updaterState, hotstringLibName) {
         "updaterSpecialUpdates", BuildUpdaterSpecialUpdates(updaterState, srcRoot, installDir))
 }
 
+CalculateBrightness(colorHex) {
+    if InStr(colorHex, "0x")
+        colorNum := Integer("0x" SubStr(colorHex, 3))
+    else
+        colorNum := Integer("0x" colorHex)
+
+    if colorNum is Number {
+        r := (colorNum >> 16) & 0xFF
+        g := (colorNum >> 8) & 0xFF
+        b := colorNum & 0xFF
+        return (r * 299 + g * 587 + b * 114) / 1000
+    }
+
+    return 128
+}
+
 UpdateProgress(gui, textCtrl, progressBar, statusText, progressValue := 0) {
     gui.Title := "AutoCorrect2 Updater - " statusText
     textCtrl.Value := statusText
@@ -1466,6 +1485,15 @@ try {
     largeFontSize := IniRead(settingsFile, "HotstringHelper", "LargeFontSize", "13")
     hotstringLibName := IniRead(settingsFile, "Files", "NewTemporaryHotstrLib", "AutoCorrectHotstrings_Upstream.ahk")
 
+    lightGreen := IniRead(settingsFile, "Shared", "LightGreen", "b8f3ab")
+    darkGreen := IniRead(settingsFile, "Shared", "DarkGreen", "0d3803")
+    lightRed := IniRead(settingsFile, "Shared", "LightRed", "fd7c73")
+    darkRed := IniRead(settingsFile, "Shared", "DarkRed", "B90012")
+    lightBlue := IniRead(settingsFile, "Shared", "LightBlue", "ADD8E6")
+    darkBlue := IniRead(settingsFile, "Shared", "DarkBlue", "00008B")
+    lightCyan := IniRead(settingsFile, "Shared", "LightCyan", "00FFFF")
+    darkCyan := IniRead(settingsFile, "Shared", "DarkCyan", "008B8B")
+
     formColor := "0xE5E4E2"
     fontColor := "c0x1F1F1F"
     listColor := "0xFFFFFF"
@@ -1476,10 +1504,21 @@ try {
         listColor := IniRead(ctSettingsFile, "ColorSettings", "listColor", listColor)
     }
 
+    formBrightness := CalculateBrightness(formColor)
+
+    effectiveGreen := formBrightness < 128 ? lightGreen : darkGreen
+    effectiveRed := formBrightness < 128 ? lightRed : darkRed
+    effectiveBlue := formBrightness < 128 ? lightBlue : darkBlue
+    effectiveCyan := formBrightness < 128 ? lightCyan : darkCyan
+
     class Config {
         static FormColor := formColor
         static FontColor := fontColor
         static LargeFontSize := "s" . largeFontSize
+        static EffectiveGreen := effectiveGreen
+        static EffectiveRed := effectiveRed
+        static EffectiveBlue := effectiveBlue
+        static EffectiveCyan := effectiveCyan
     }
 
     progressGui := Gui()
@@ -1487,7 +1526,10 @@ try {
     progressGui.Opt("+AlwaysOnTop")
     progressGui.BackColor := formColor
     progressGui.SetFont("s" fontSize " " fontColor)
-    statusTextCtrl := progressGui.Add("Text", "w400 h30 cBlue", "Checking for updates...")
+    statusTextCtrl := progressGui.Add(
+        "Text",
+        "w400 h30 c" Config.EffectiveBlue,
+        "Checking for updates...")
     progressBarCtrl := progressGui.Add("Progress", "w400 h20 vMyProgress Range0-100", 0)
     progressGui.Show("w420 h100")
     UpdateProgress(progressGui, statusTextCtrl, progressBarCtrl, "Checking GitHub for updates...", 10)
@@ -1654,7 +1696,7 @@ ShowPendingGui(pendingFiles, lastCheckInfo, updaterState, srcRoot, fontSize, for
     if pendingFiles.Length > 0 {
         pendingGui.Add(
             "Text",
-            "w760 cBlue",
+            "w760 c" Config.EffectiveBlue,
             "Pending files (" pendingFiles.Length "):")
         pendingGui.Add("Text", "w760", "Check the files you want to update now, then click Update.")
 
@@ -1954,7 +1996,10 @@ ShowUpdateGui(updatedFiles, rarelyUpdatedFiles, newFiles, updaterSpecialUpdates,
         allUpdatedFiles.Push({data: item, shouldCheck: false})
 
     if allUpdatedFiles.Length > 0 {
-        updateGui.Add("Text", "w760 cBlue", "Updated files (" allUpdatedFiles.Length "):")
+        updateGui.Add(
+            "Text",
+            "w760 c" Config.EffectiveBlue,
+            "Updated files (" allUpdatedFiles.Length "):")
         lvUpdated := updateGui.Add(
             "ListView",
             "w760 r8 Checked -Multi +Background" listColor,
@@ -1968,7 +2013,10 @@ ShowUpdateGui(updatedFiles, rarelyUpdatedFiles, newFiles, updaterSpecialUpdates,
     }
 
     if newFiles.Length > 0 {
-        updateGui.Add("Text", "w760 cGreen y+8", "New files (" newFiles.Length "):")
+        updateGui.Add(
+            "Text",
+            "w760 c" Config.EffectiveGreen " y+8",
+            "New files (" newFiles.Length "):")
         lvNew := updateGui.Add(
             "ListView",
             "w760 r8 Checked -Multi +Background" listColor,
@@ -2056,7 +2104,7 @@ HotstringLibModeChanged(updateGui, hotstringLibName, mode, GuiCtrlObj, Info) {
 
     if updateGui.radReplace != "" {
         if mode = 0 {
-            updateGui.radReplace.Opt("+cFF0000")
+            updateGui.radReplace.Opt("+c" Config.EffectiveRed)
             LogDebug("Replace mode selected - radio button text is RED")
         } else {
             updateGui.radReplace.Opt("+" updateGui.fontColor)

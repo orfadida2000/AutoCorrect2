@@ -10,14 +10,42 @@
 
 ^Esc::ExitApp ; <----- Emergency kill switch is Ctrl+Esc. 
 
+CalculateBrightness(colorHex) {
+    if InStr(colorHex, "0x")
+        colorNum := Integer("0x" SubStr(colorHex, 3))
+    else
+        colorNum := Integer("0x" colorHex)
+
+    if colorNum is Number {
+        r := (colorNum >> 16) & 0xFF
+        g := (colorNum >> 8) & 0xFF
+        b := colorNum & 0xFF
+        return (r * 299 + g * 587 + b * 114) / 1000
+    }
+
+    return 128
+}
+
 settingsFile := "..\Data\acSettings.ini"
 ; Verify settings file exists
 if !FileExist(settingsFile) {
 	MsgBox(settingsFile " was not found. Please run AutoCorrect2 first to create the file.")
 	ExitApp
 }
+
+LightGreen := IniRead(settingsFile, "Shared", "LightGreen", "b8f3ab")
+DarkGreen := IniRead(settingsFile, "Shared", "DarkGreen", "0d3803")
+
+colorThemeFile := "..\Data\colorThemeSettings.ini"
+formColor := FileExist(colorThemeFile)
+    ? IniRead(colorThemeFile, "ColorSettings", "formColor", "E5E4E2")
+    : "E5E4E2"
+
+formBrightness := CalculateBrightness(formColor)
+effectiveGreen := formBrightness < 128 ? LightGreen : DarkGreen
+
 mainFile := "..\Core\" IniRead(settingsFile, "Files", "HotstringLibrary", "AutoCorrectHotstrings.ahk")
-extraFile := "..\Core\" IniRead(settingsFile, "Files", "NewTemporaryHotstrLib", "HotstringLib (1).ahk")
+extraFile := "..\Core\" IniRead(settingsFile, "Files", "NewTemporaryHotstrLib", "AutoCorrectHotstrings_Upstream.ahk")
 
 ; Function to get file path with dialog fallback
 GetFilePath(defaultPath, fileType) {
@@ -71,9 +99,9 @@ rep := Gui()
 rep.Opt("-MinimizeBox +alwaysOnTop +Owner")
 rep.SetFont("s13")
 progLabelM := rep.Add("Text",, "Items Unique to: " extraFileName)
-MyProgressM := rep.Add("Progress", "w400 h30 cGreen Range0-" . TotalLinesM, "0")
+MyProgressM := rep.Add("Progress", "w400 h30 c" effectiveGreen " Range0-" . TotalLinesM, "0")
 progLabelE := rep.Add("Text",, "Items Unique to: " mainFileName)
-MyProgressE := rep.Add("Progress", "w400 h30 cGreen Range0-" . TotalLinesE, "0")
+MyProgressE := rep.Add("Progress", "w400 h30 c" effectiveGreen " Range0-" . TotalLinesE, "0")
 
 rep.Show()
 

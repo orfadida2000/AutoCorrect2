@@ -16,11 +16,40 @@
 
 ^Esc::ExitApp ; Emergency kill switch
 
+^Esc::ExitApp ; Emergency kill switch
+
+CalculateBrightness(colorHex) {
+    if InStr(colorHex, "0x")
+        colorNum := Integer("0x" SubStr(colorHex, 3))
+    else
+        colorNum := Integer("0x" colorHex)
+
+    if colorNum is Number {
+        r := (colorNum >> 16) & 0xFF
+        g := (colorNum >> 8) & 0xFF
+        b := colorNum & 0xFF
+        return (r * 299 + g * 587 + b * 114) / 1000
+    }
+
+    return 128
+}
+
 settingsFile := "..\Data\acSettings.ini"
 if !FileExist(settingsFile) {
 	MsgBox(settingsFile " was not found. Please run AutoCorrect2 first.")
 	ExitApp
 }
+
+LightGreen := IniRead(settingsFile, "Shared", "LightGreen", "b8f3ab")
+DarkGreen := IniRead(settingsFile, "Shared", "DarkGreen", "0d3803")
+
+colorThemeFile := "..\Data\colorThemeSettings.ini"
+formColor := FileExist(colorThemeFile)
+    ? IniRead(colorThemeFile, "ColorSettings", "formColor", "E5E4E2")
+    : "E5E4E2"
+
+formBrightness := CalculateBrightness(formColor)
+effectiveGreen := formBrightness < 128 ? LightGreen : DarkGreen
 
 targetFile := "..\Core\" IniRead(settingsFile, "Files", "HotstringLibrary", "..\Core\AutoCorrectHotstrings.ahk")
 fullList := FileRead(targetFile)
@@ -49,7 +78,7 @@ hotstringData := []  ; Array to store: {opts, trig, line, index}
 
 rep := Gui()
 rep.Opt("-MinimizeBox +alwaysOnTop +Owner")
-MyProgress := rep.Add("Progress", "w400 h30 cGreen Range0-" TotalLines, "0")
+MyProgress := rep.Add("Progress", "w400 h30 c" effectiveGreen " Range0-" TotalLines, "0")
 rep.Title := "Extracting hotstring data..."
 rep.Show()
 

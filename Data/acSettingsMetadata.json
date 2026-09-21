@@ -191,6 +191,30 @@
     "type": "color",
     "validation": "^[0-9A-Fa-f]{6}$"
   },
+  "Shared.LightBlue": {
+    "label": "Light Blue Color",
+    "help": "Hex color code (without #) for Blue elements in the UI, when a dark gui color is used.",
+    "type": "color",
+    "validation": "^[0-9A-Fa-f]{6}$"
+  },
+  "Shared.DarkBlue": {
+    "label": "Dark Blue Color",
+    "help": "Hex color code (without #) for Blue elements in the UI, when a light gui color is used.",
+    "type": "color",
+    "validation": "^[0-9A-Fa-f]{6}$"
+  },
+  "Shared.LightCyan": {
+    "label": "Light Cyan Color",
+    "help": "Hex color code (without #) for Cyan elements in the UI, when a dark gui color is used.",
+    "type": "color",
+    "validation": "^[0-9A-Fa-f]{6}$"
+  },
+  "Shared.DarkCyan": {
+    "label": "Dark Cyan Color",
+    "help": "Hex color code (without #) for Cyan elements in the UI, when a light gui color is used.",
+    "type": "color",
+    "validation": "^[0-9A-Fa-f]{6}$"
+  },
   "HotstringHelper.CODE_DEBUG_LOG": {
     "label": "Debug Logging",
     "help": "If enabled, detailed debug information for the AutoCorrect2.ahk script is logged. Warning: very verbose output.",

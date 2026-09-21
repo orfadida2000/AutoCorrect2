@@ -54,6 +54,10 @@ class ACLogAnalyzer {
                 StartLine: Integer(IniRead(settingsFile, "ACLogAnalyzer", "StartLine", 7)),
                 CullDateFormat: IniRead(settingsFile, "ACLogAnalyzer", "CullDateFormat", "MM-dd-yyyy"),
                 EditorPath: "",
+                Colors: {
+                    LightGreen: IniRead(settingsFile, "Shared", "LightGreen", "b8f3ab"),
+                    DarkGreen: IniRead(settingsFile, "Shared", "DarkGreen", "0d3803")
+                },
                 ScriptFiles: {
                     ACScript:       "..\Core\" IniRead(settingsFile, "Files", "AutoCorrect2Script", "..\Core\AutoCorrect2.ahk"),
                     HSLibrary:      "..\Core\" IniRead(settingsFile, "Files", "HotstringLibrary", "..\Core\AutoCorrectHotstrings.ahk"),
@@ -87,8 +91,7 @@ class ACLogAnalyzer {
     static FontColor := "Default"
     static ListColor := "Default"
     static FormColor := "Default"
-    static RadioColor := "Blue"
-    static ProgressColor := "c1b7706"
+    static ProgressColor := "1b7706"
 
     static SuggestAlternatives := ""  ; Will be assigned later
     ; ======= Public Methods =======
@@ -149,6 +152,8 @@ class ACLogAnalyzer {
     ; Load visual theme settings
     static LoadThemeSettings() {
         try {
+            config := this.Config
+
             if FileExist("..\Data\colorThemeSettings.ini") {
                 settingsFile := "..\Data\colorThemeSettings.ini"
                 this.FontColor := IniRead(settingsFile, "ColorSettings", "fontColor")
@@ -161,8 +166,7 @@ class ACLogAnalyzer {
                 g := (formColor >> 8) & 0xFF
                 b := formColor & 0xFF
                 brightness := (r * 299 + g * 587 + b * 114) / 1000
-                this.RadioColor := brightness > 128 ? "Blue" : "0x00FFFF"
-                this.ProgressColor := brightness > 128 ? "c248d0c" : "c60fc3d"
+                this.ProgressColor := brightness < 128 ? config.Colors.LightGreen : config.Colors.DarkGreen
             }
         } catch Error as err {
             LogError("Error loading theme settings: " err.Message)

@@ -61,7 +61,7 @@ class Config {
     ; General Configuration
     static HotstringLibrary := "AutoCorrectHotstrings.ahk"
     static BoilerplateHotstringLibrary := "PersonalHotstrings.ahk"
-    static NewTemporaryHotstrLib := "AutoCorrectHotstrings (1).ahk"
+    static NewTemporaryHotstrLib := "AutoCorrectHotstrings_Upstream.ahk"
     static RemovedHsFile := "..\Data\RemovedHotstrings.txt" ; At iniRead, gets replaced with 'RemovedHotstrings.txt'.
     static AutoCorrectsLogFile := "..\Data\AutoCorrectsLog.txt"
     static ACLogContinuousFile := "..\Data\ACLogContinuous.txt"
@@ -140,6 +140,16 @@ class Config {
     static DarkGreen := "0d3803"
     static LightRed := "fd7c73"
     static DarkRed := "B90012"
+    static LightBlue := "ADD8E6"
+    static DarkBlue := "00008B"
+    static LightCyan := "00FFFF"
+    static DarkCyan := "008B8B"
+
+    static EffectiveGreen := ""
+    static EffectiveRed := ""
+    static EffectiveBlue := ""
+    static EffectiveCyan := ""
+
     static ValidityDialogGreen := ""
     static ValidityDialogRed := ""
     
@@ -174,8 +184,14 @@ class Config {
         
         ; Perform any necessary calculations and validations
         this.CalculateBrightness()
-        this.ValidityDialogGreen := this.Brightness < 128 ? "c" Config.LightGreen : "c" Config.DarkGreen 
-        this.ValidityDialogRed := this.Brightness < 128 ? "c" Config.LightRed  : "c" Config.DarkRed
+
+        this.EffectiveGreen := this.Brightness < 128 ? this.LightGreen : this.DarkGreen
+        this.EffectiveRed := this.Brightness < 128 ? this.LightRed : this.DarkRed
+        this.EffectiveBlue := this.Brightness < 128 ? this.LightBlue : this.DarkBlue
+        this.EffectiveCyan := this.Brightness < 128 ? this.LightCyan : this.DarkCyan
+
+        this.ValidityDialogGreen := "c" this.EffectiveGreen
+        this.ValidityDialogRed := "c" this.EffectiveRed
         
         ; Try to find VSCode if available
         this.EditorPath := "C:\Users\" A_UserName "\AppData\Local\Programs\Microsoft VS Code\Code.exe"
@@ -223,7 +239,7 @@ class Config {
         ; filenames — not full relative paths — or we'd double the prefix when the
         ; INI key is missing (e.g. "..\Data\..\Data\RemovedHotstrings.txt").
         this.HotstringLibrary           := this.ReadIni("Files", "HotstringLibrary", "AutoCorrectHotstrings.ahk")
-        this.NewTemporaryHotstrLib      := this.ReadIni("Files", "NewTemporaryHotstrLib", "AutoCorrectHotstrings (1).ahk")
+        this.NewTemporaryHotstrLib      := this.ReadIni("Files", "NewTemporaryHotstrLib", "AutoCorrectHotstrings_Upstream.ahk")
         this.BoilerplateHotstringLibrary := this.ReadIni("Files", "BoilerplateHotstringLibrary", "PersonalHotstrings.ahk")
         this.RemovedHsFile              := "..\Data\" this.ReadIni("Files", "RemovedHsFile", "RemovedHotstrings.txt")
         this.AutoCorrectsLogFile        := "..\Data\" this.ReadIni("Files", "AutoCorrectsLogFile", "AutoCorrectsLog.txt")
@@ -251,11 +267,16 @@ class Config {
         if (this.EditorCmd != "" && SubStr(this.EditorCmd, 1, 1) != '"' &&
             SubStr(this.EditorCmd, -1) != '"' && InStr(this.EditorCmd, '"'))
             this.EditorCmd := '"' this.EditorCmd '"'
-        ; Green and Red
-        this.LightGreen                 := this.ReadIni("Shared", "LightGreen", "b8f3ab")
-        this.DarkGreen                  := this.ReadIni("Shared", "DarkGreen", "0d3803")
-        this.LightRed                   := this.ReadIni("Shared", "LightRed", "fd7c73")
-        this.DarkRed                    := this.ReadIni("Shared", "DarkRed", "B90012")
+
+        ; Semantic UI colors
+        this.LightGreen := this.ReadIni("Shared", "LightGreen", "b8f3ab")
+        this.DarkGreen := this.ReadIni("Shared", "DarkGreen", "0d3803")
+        this.LightRed := this.ReadIni("Shared", "LightRed", "fd7c73")
+        this.DarkRed := this.ReadIni("Shared", "DarkRed", "B90012")
+        this.LightBlue := this.ReadIni("Shared", "LightBlue", "ADD8E6")
+        this.DarkBlue := this.ReadIni("Shared", "DarkBlue", "00008B")
+        this.LightCyan := this.ReadIni("Shared", "LightCyan", "00FFFF")
+        this.DarkCyan := this.ReadIni("Shared", "DarkCyan", "008B8B")
 
         ; [Hotkeys] Section
         this.HotstringHelperActivationHotkey := this.ReadIni("Hotkeys", "HotstringHelperActivationHotkey", "#h")
@@ -779,7 +800,7 @@ class UI {
 		
 		; Set background color for edit controls (same as in other sections)
 		this.ListBackground := Config.ListColor != "" ? "Background" Config.ListColor : ""
-        CommentColor := Config.Brightness < 128 ? "00ff22" : "005a17" 
+        CommentColor := Config.EffectiveGreen
 		
 		; Hard-code comment label and editbox position since we now have radio buttons above
 		; This prevents AHK from auto-positioning it relative to radio buttons
@@ -825,7 +846,7 @@ class UI {
         
         this.MainForm.SetFont("s14")
         fontSize := 14  ; Define fontSize for DeltaString monospaced controls
-        deltaColor := Config.brightness < 128 ? "00FFFF" : "191970" 
+        deltaColor := Config.brightness < 128 ? Config.EffectiveCyan : Config.EffectiveBlue 
         ; Create three overlapping monospaced-font Text controls for DeltaString coloring effect (MODIFIED)
         deltaStringWidth := Config.DefaultWidth * 3 / 4
         deltaStringX := (Config.DefaultWidth / 8) + 15  ; Position after LeftTrimButton with margin
@@ -837,12 +858,12 @@ class UI {
         
         ; Red left layer (trimmed-left chars in red, rest spaces - transparent background)
         this.Controls["DeltaStringRedLeft"] := this.MainForm.AddText(
-            "center cRed x" deltaStringX " y279 w" deltaStringWidth " +BackgroundTrans", "")
+            "center c" Config.EffectiveRed " x" deltaStringX " y279 w" deltaStringWidth " +BackgroundTrans", "")
         this.Controls["DeltaStringRedLeft"].SetFont("s" fontSize, "Consolas")
         
         ; Red right layer (spaces then trimmed-right chars in red - transparent background)
         this.Controls["DeltaStringRedRight"] := this.MainForm.AddText(
-            "center cRed x" deltaStringX " y279 w" deltaStringWidth " +BackgroundTrans", "")
+            "center c" Config.EffectiveRed " x" deltaStringX " y279 w" deltaStringWidth " +BackgroundTrans", "")
         this.Controls["DeltaStringRedRight"].SetFont("s" fontSize, "Consolas")
         
         ; All three layers respond to clicks (for UpdateDeltaString functionality)
@@ -4562,7 +4583,7 @@ class HelpSystem {
                     this.helpTexts["ControlButton_Updater"] := "Launches the Updater tool, which checks the AutoCorrect2 GitHub repository for newer versions of the suite files.`n`nThe last-seen commit is recorded in Data\LastUpdateCheck.ini, so repeat checks are fast when nothing has changed.`n`nAutoCorrectHotstrings.ahk gets special treatment: rather than being overwritten, you are given the option to save the incoming version under a different name so that your own custom hotstrings are not lost.  Use the Compare Two Versions of AutoCorrectHotstrings tool afterward to merge them.`n`nFiles you skip are remembered and offered again on the next check."
                     
                 case "UniqueStringExtractor":
-                    this.helpTexts["ControlButton_UniqueStringExtractor"] := "This runs an INTER-script scan to compare two versions of the hotstring library:`n`n" Config.HotstringLibrary "`n" Config.NewTemporaryHotstrLib "`n`nIt will alert the user of hotstrings that are unique to each version.  This is meant to facilitate merging two versions of the library. It is recommended to choose a convenient temporary name for one the new version, such as `"AutoCorrectHotstrings (1).ahk`" then program that into the acSettings.ini file (current name is shown above) and use the same temporary name each time.  The tool will default to those paths.  If either is not found, a file chooser dialog will appear. A report document is created in the \Data\ folder and the report is opened upon completion of the scan."
+                    this.helpTexts["ControlButton_UniqueStringExtractor"] := "This runs an INTER-script scan to compare two versions of the hotstring library:`n`n" Config.HotstringLibrary "`n" Config.NewTemporaryHotstrLib "`n`nIt will alert the user of hotstrings that are unique to each version.  This is meant to facilitate merging two versions of the library. It is recommended to choose a convenient temporary name for one the new version, such as `"AutoCorrectHotstrings_Upstream.ahk`" then program that into the acSettings.ini file (current name is shown above) and use the same temporary name each time.  The tool will default to those paths.  If either is not found, a file chooser dialog will appear. A report document is created in the \Data\ folder and the report is opened upon completion of the scan."
 
                 case "Defunctionizer":
                     this.helpTexts["ControlButton_Defunctionizer"] := "This is for users who do not want their AutoCorrect items embedded in the f() function calls. The `"Defunctionizer`" tool removes them."

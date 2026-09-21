@@ -47,8 +47,7 @@ class Config {
     static FontColor := "Default"
     static ListColor := "Default"
     static FormColor := "Default"
-    static RadioColor := "Blue"
-    static ProgressColor := "c1b7706"
+    static ProgressColor := "1b7706"
     
     ; Initialize settings and properties
     static Init() {
@@ -62,11 +61,21 @@ class Config {
     ; Load visual theme settings
     static LoadThemeSettings() {
         try {
-            if FileExist("..\Data\colorThemeSettings.ini") {
-                settingsFile := "..\Data\colorThemeSettings.ini"
-                this.FontColor := IniRead(settingsFile, "ColorSettings", "fontColor")
-                this.ListColor := IniRead(settingsFile, "ColorSettings", "listColor")
-                this.FormColor := IniRead(settingsFile, "ColorSettings", "formColor")
+            acSettingsFile := "..\Data\acSettings.ini"
+            themeSettingsFile := "..\Data\colorThemeSettings.ini"
+
+            if FileExist(acSettingsFile) {
+                lightGreen := IniRead(acSettingsFile, "Shared", "LightGreen", "b8f3ab")
+                darkGreen := IniRead(acSettingsFile, "Shared", "DarkGreen", "0d3803")
+            } else {
+                lightGreen := "b8f3ab"
+                darkGreen := "0d3803"
+            }
+
+            if FileExist(themeSettingsFile) {
+                this.FontColor := IniRead(themeSettingsFile, "ColorSettings", "fontColor")
+                this.ListColor := IniRead(themeSettingsFile, "ColorSettings", "listColor")
+                this.FormColor := IniRead(themeSettingsFile, "ColorSettings", "formColor")
 
                 ; Calculate contrasting colors based on background brightness
                 formColor := "0x" SubStr(this.FormColor, -6)
@@ -74,8 +83,8 @@ class Config {
                 g := (formColor >> 8) & 0xFF
                 b := formColor & 0xFF
                 brightness := (r * 299 + g * 587 + b * 114) / 1000
-                this.RadioColor := brightness > 128 ? "Blue" : "0x00FFFF"
-                this.ProgressColor := brightness > 128 ? "c248d0c" : "c60fc3d"
+
+                this.ProgressColor := brightness < 128 ? lightGreen : darkGreen
             }
         } catch Error as err {
             LogError("Error loading theme settings: " err.Message)

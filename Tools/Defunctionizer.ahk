@@ -45,7 +45,7 @@ KeepComments := IniRead(settingsFile, "Defunctionizer", "keepComments", 0)
 ; Ctrl+F3 "Potential Fixes Report" will stop working correctly. 
 
 defaultHSLibrary := "..\Core\" IniRead(settingsFile, "Paths", "HotstringLibrary", "..\Core\AutoCorrectHotstrings.ahk")
-alternateHSLibrary := "..\Core\" IniRead(settingsFile, "Files", "NewTemporaryHotstrLib", "HotstringLib (1).ahk")
+alternateHSLibrary := "..\Core\" IniRead(settingsFile, "Files", "NewTemporaryHotstrLib", "AutoCorrectHotstrings_Upstream.ahk")
 
 ; ==============================================================================
 ; LOAD COLORS AND THEME
