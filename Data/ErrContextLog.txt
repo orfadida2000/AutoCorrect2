@@ -312,3 +312,4 @@ Date Y-M-D	item			context
 2026-10-04 << :?C:esnt::esent	---> ] < ] < ] < ] < ] < ] < ] < ]should] - ]not] - ]care] - ]about] - ]cli] - ]logic] - ]like] - ]
 2026-10-04 << :*C:a an::an an	---> a[ - [an] < ] < ]AC] < ] < ] < ] < ] - ]AC] - ]comm] < ] < ] < ]operation] - ]to] - ]
 2026-10-11 << :*C:i ::I 		---> a[ - [file[ - [i[ - [s] - ]but] - ]doesnt] - ]lo] < ] < ] < ] < ]v] < ]belong] - ]to] - ]a] - ]
+2026-10-12 << ::alaso::also		---> [ < [ < [+win+R[Enter[Enter[and[ - [alaso[ - [] < ]o] - ]i] - ]dont] - ]like] - ]the] - ]even] - ]though] - ]
