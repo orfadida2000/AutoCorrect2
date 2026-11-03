@@ -323,3 +323,4 @@ Date Y-M-D	item			context
 2026-10-20 << :*?C:iht::ith		---> its[ - [a[ - [l[ - [only[Enter[not[ - [in[ - [the[ - [store[ - [riht] < ] < ]h] < ]
 2026-10-21 << :*?C:tkae::take	---> [ < [s[ - [a[ < [to[ - [tkae] < ]e] - ]stro] < ] < ]orage] - ]and] - ] < ] < ] < ] < ]
 2026-10-21 << :*C:i ::I 		---> i[ - [] < ]is] - ]where] - ]io] < ]m] - ]fure] < ] < ]isnt] - ]wnget] - ]can] - ] < ] < ] < ]
+2026-11-03 << :?:adn::and		---> [ < [ive[ - [ < [ < [ < [ < [ < [adn[ - [] - ]the] - ]second] - ]command] - ] < ]-dl] - ]
