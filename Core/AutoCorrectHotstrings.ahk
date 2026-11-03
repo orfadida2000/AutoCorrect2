@@ -7475,3 +7475,4 @@ ACitemsEndAt := A_LineNumber - 3 ; hh2 validity checks will skip lines after her
 :B0X:cadiadte::f("candidate") ; Web Freq 21.64 | Fixes 1 word Custom
 :B0X:giancantic::f("gigantic") ; Web Freq 2.18 | Fixes 1 word 
 :B0X:func::f("function") ; Web Freq 93.88 | Fixes 1 word 
+:B0X:funcs::f("functions") ; Web Freq 51.82 | Fixes 1 word 
